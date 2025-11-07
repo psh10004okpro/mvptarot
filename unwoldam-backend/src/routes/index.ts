@@ -3,6 +3,7 @@ import authRoutes from './authRoutes';
 import tarotRoutes from './tarotRoutes';
 import cardRoutes from './cardRoutes';
 import subscriptionRoutes from './subscriptionRoutes';
+import voiceRoutes from './voiceRoutes';
 
 const router = Router();
 
@@ -20,5 +21,6 @@ router.use('/auth', authRoutes);
 router.use('/tarot', tarotRoutes);
 router.use('/cards', cardRoutes);
 router.use('/subscription', subscriptionRoutes);
+router.use('/voice', voiceRoutes);
 
 export default router;

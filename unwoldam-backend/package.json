@@ -10,7 +10,10 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "eslint src --ext .ts",
-    "lint:fix": "eslint src --ext .ts --fix"
+    "lint:fix": "eslint src --ext .ts --fix",
+    "preprocess:data": "ts-node scripts/preprocessData.ts",
+    "seed:cards": "ts-node scripts/seedTarotCards.ts",
+    "seed:interpretations": "ts-node scripts/seedInterpretations.ts"
   },
   "keywords": [
     "tarot",
@@ -36,7 +39,15 @@
     "compression": "^1.7.4",
     "express-validator": "^7.0.1",
     "cookie-parser": "^1.4.6",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "@anthropic-ai/sdk": "^0.27.3",
+    "chromadb": "^1.8.1",
+    "openai": "^4.24.1",
+    "ioredis": "^5.3.2",
+    "axios": "^1.6.5",
+    "multer": "^1.4.5-lts.1",
+    "form-data": "^4.0.0",
+    "crypto-js": "^4.2.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
@@ -48,6 +59,8 @@
     "@types/compression": "^1.7.5",
     "@types/cookie-parser": "^1.4.6",
     "@types/uuid": "^9.0.7",
+    "@types/multer": "^1.4.11",
+    "@types/crypto-js": "^4.2.1",
     "@typescript-eslint/eslint-plugin": "^6.16.0",
     "@typescript-eslint/parser": "^6.16.0",
     "eslint": "^8.56.0",

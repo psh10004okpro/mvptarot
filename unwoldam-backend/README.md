@@ -190,6 +190,17 @@ npm start
 | PUT | `/api/subscription/cancel` | 구독 취소 | Private |
 | GET | `/api/subscription/history` | 구독 히스토리 | Private |
 
+### 음성 (Voice) - **NEW in Phase 2**
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| POST | `/api/voice/synthesize` | 텍스트를 음성으로 변환 (TTS) | Private |
+| POST | `/api/voice/synthesize/reading` | 타로 리딩 음성 생성 | Private |
+| POST | `/api/voice/recognize` | 음성을 텍스트로 변환 (STT) | Private |
+| POST | `/api/voice/recognize/analyze` | 음성 질문 인식 및 분석 | Private |
+| GET | `/api/voice/speakers` | 사용 가능한 음성 목록 | Public |
+| GET | `/api/voice/cache/stats` | 음성 캐시 통계 | Private |
+
 ## 📝 사용 예시
 
 ### 1. 회원가입
@@ -313,18 +324,130 @@ npm test
 - Input validation (Joi)
 - Error handling
 
-## 📊 다음 단계
+## 📊 구현 상태
 
-### Phase 2: 데이터 통합 (Day 4-5)
-- [ ] 10,031개 타로 해석 데이터 임포트
-- [ ] 78장 타로 카드 기본 데이터 임포트
-- [ ] 데이터 검증 및 품질 관리
+### ✅ Phase 1: 백엔드 인프라 구축 (완료)
+- [x] Node.js + Express + TypeScript 프로젝트 초기화
+- [x] MongoDB 데이터베이스 연동 및 스키마 설계
+- [x] JWT 기반 인증 시스템
+- [x] 타로 리딩 API 엔드포인트
+- [x] 구독 관리 시스템
+- [x] Rate Limiting 및 보안 기능
 
-### Phase 3: 프론트엔드 개발 (Day 6-10)
+### ✅ Phase 2: AI 통합 및 개인화 시스템 (완료)
+- [x] **RAG 시스템**: Vector DB (ChromaDB) + OpenAI Embeddings
+- [x] **LLM 통합**: Claude 3.5 Sonnet API
+- [x] **개인화 해석**: 사용자 맥락 기반 맞춤 리딩
+- [x] **음성 기능**: CLOVA TTS/STT 통합
+- [x] **음성 캐싱**: Redis 기반 오디오 캐시 시스템
+- [x] **Prompt Templates**: MZ세대 스타일 다양한 템플릿
+
+#### Phase 2 주요 기능
+
+**🤖 AI-Powered 타로 해석**
+- Claude 3.5 Sonnet을 활용한 개인화된 타로 해석
+- Vector DB를 통한 10,031개 해석 데이터 의미 검색
+- 사용자 나이, 관심사, 이전 리딩을 고려한 맞춤 해석
+- 연애, 커리어, 건강, 영적 성장 등 맥락별 특화 프롬프트
+
+**🎙️ 음성 타로 리딩**
+- CLOVA Premium TTS: 4가지 음성 선택 (nara, nmammon, ndain, njinho)
+- 감정, 속도, 피치 조절 가능
+- Redis 기반 스마트 캐싱으로 비용 최적화
+- 음성 질문 인식 및 자동 카테고리 분류
+
+**💾 벡터 데이터베이스**
+- ChromaDB를 통한 고속 의미 검색
+- OpenAI text-embedding-3-small 모델
+- 유사도 기반 최적 해석 검색
+- 카드 조합 시너지 분석
+
+### 🔜 Phase 3: 프론트엔드 개발 (예정)
 - [ ] React/Next.js 프론트엔드 구축
 - [ ] 타로 카드 UI/UX 디자인
 - [ ] 리딩 결과 페이지
+- [ ] 음성 리딩 플레이어
 - [ ] 결제 시스템 통합
+
+## 🚀 새로운 AI 기능 사용법
+
+### 1. AI 개인화 리딩
+```bash
+# 사용자 맥락을 포함한 3장 카드 리딩
+curl -X POST http://localhost:3000/api/tarot/reading/three-card \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -d '{
+    "question": "이직을 고민 중인데 어떤 선택이 좋을까요?",
+    "context": "career"
+  }'
+```
+
+### 2. 음성 변환 (TTS)
+```bash
+# 타로 해석을 음성으로 변환
+curl -X POST http://localhost:3000/api/voice/synthesize \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -d '{
+    "text": "오늘의 카드는 태양입니다. 밝은 에너지가 가득한 하루가 될 거예요.",
+    "speaker": "nara"
+  }' \
+  --output tarot-reading.mp3
+```
+
+### 3. 음성 질문 인식 (STT)
+```bash
+# 음성 파일을 업로드하여 질문 분석
+curl -X POST http://localhost:3000/api/voice/recognize/analyze \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -F "audio=@question.wav"
+```
+
+## 🛠️ AI 서비스 설정
+
+### 필수 API 키 설정
+`.env` 파일에 다음 API 키를 설정하세요:
+
+```env
+# Claude API
+ANTHROPIC_API_KEY=your-anthropic-api-key
+
+# OpenAI (Embeddings)
+OPENAI_API_KEY=your-openai-api-key
+
+# CLOVA Voice API
+CLOVA_CLIENT_ID=your-clova-client-id
+CLOVA_CLIENT_SECRET=your-clova-client-secret
+```
+
+### Redis 및 ChromaDB 실행
+
+```bash
+# Docker Compose로 모든 서비스 시작
+docker-compose up -d
+
+# 포함 서비스:
+# - MongoDB (Port 27017)
+# - Redis (Port 6379)
+# - Mongo Express UI (Port 8081)
+```
+
+**참고**: ChromaDB는 별도 설치가 필요합니다:
+```bash
+pip install chromadb
+chroma run --path ./chroma_data --port 8000
+```
+
+### 데이터 시딩
+
+```bash
+# 타로 카드 데이터 시딩
+npm run seed:cards
+
+# 해석 데이터를 Vector DB에 로드
+npm run preprocess:data
+```
 
 ## 🤝 기여
 
